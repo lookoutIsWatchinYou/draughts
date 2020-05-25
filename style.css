@@ -1,0 +1,37 @@
+*{
+    margin:0;
+    padding:0;
+    font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+.main-wrapper{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+.board{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    padding:40px;
+width: 800px;
+height: 800px;
+}
+.rowBlock{
+    justify-content: center;
+}
+.columnBlock{
+    width:100px;
+    height:100px;
+    border:solid black 2px;
+    background-color: white;
+
+}
+.piecesPlayer1{
+
+}
+.piecesPlayer2{
+
+}
