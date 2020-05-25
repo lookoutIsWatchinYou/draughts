@@ -56,6 +56,8 @@ console.log(board);
 //25/05
 //need to add turn system and
 // *i mean implement tbh
+//done that i think
+//need to add double jumps
 var game ={
   playerTurn:"red",
   previousPiece:{
@@ -130,7 +132,17 @@ badMove: function (){
 //...this is passed to basically everything..... badddd
 
     canWeMove :function(id){
-      game.previousPiece.color === game.playerTurn;
+      if( game.previousPiece.color == game.playerTurn){
+
+        
+
+      if(game.previousPiece.color=="red"){
+        game.playerTurn = "blue";
+        }
+         if(game.previousPiece.color=="blue"){
+          game.playerTurn = "red";
+        
+        }
 
       var calc = normalIndex[id]-normalIndex[this.previousPiece.id];
       console.log("the calc " +calc);
@@ -171,6 +183,10 @@ badMove: function (){
         }
       }
     }
+  }
+  else{
+    return window.alert("Its " + game.playerTurn +" turn not yours")
+  }
 function checkAdjacent(id){
 
   console.log("should check if we can take instead of  jump ");
@@ -375,13 +391,8 @@ count++;
     //all this does is move location on page and grid
     movePiece: function(e,thingToDelete,color){
    
-if(color=="red"){
-game.playerTurn = "blue";
-}
-else if(color=="blue"){
-  game.playerTurn = "red";
 
-}
+        
 console.log("moved to" + e); 
   columnBlock[e].style.backgroundColor =game.previousPiece.color; 
   columnBlock[game.previousPiece.id].style.backgroundColor=game.currentPiece.color;
