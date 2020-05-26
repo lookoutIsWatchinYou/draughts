@@ -1,13 +1,5 @@
 
-//draughts
-//need a board
-//need pieceis
 
-//useful example i found https://github.com/codethejason/checkers
-//borrowed the grid
-
-//grid uses sets that are easier to check with
-//1 and 2 for checkers for different players, 0 empty squares
 var grid = [
 0, 1, 0, 1, 0, 1, 0, 1,
 1, 0, 1, 0, 1, 0, 1, 0,
@@ -26,7 +18,7 @@ var grid = [
 
 var count=0;
 var direction= "";
-var canMove = false;
+var canMove = true;
 var board = document.getElementsByClassName("board")[0];
 var rowBlock = document.getElementsByClassName("rowBlock");
 var columnBlock = document.getElementsByClassName("columnBlock");
@@ -34,6 +26,23 @@ var pieceSelected=false;
 var normalIndex=[];
 
 console.log(board);
+//************************************** */
+//************************************** */
+//**************frazers notes!************************ */
+//************************************** */
+//************************************** */
+//draughts
+//need a board
+//need pieceis
+
+//useful example i found https://github.com/codethejason/checkers
+//borrowed the grid
+
+//grid uses sets that are easier to check with
+//1 and 2 for checkers for different players, 0 empty squares
+//********************************************************* */
+//********************************************************* */
+
 //general game logic
 //first step put the pieces on the board XX
 //NEXT STEP move them XX
@@ -57,8 +66,18 @@ console.log(board);
 //need to add turn system and
 // *i mean implement tbh
 //done that i think
-//need to add double jumps
+//NO need to stop it skipping turns for selectingp ieces
+//Stopped it skipping
+//need to add double jumps and then kings arent any other rules?
+//also need to properly comment everything
+//**************END OF frazers notes!************************ */
+//************************************** */
+//************************************** */
+//************************************** */
+//************************************** */
+
 var game ={
+  hasMoved:true,
   playerTurn:"red",
   previousPiece:{
 id:0,
@@ -94,6 +113,9 @@ game.currentPiece.present = true;
 },
 result:0,
 badMove: function (){
+
+
+  game.hasMoved =false;
 
   canMove=false;
 
@@ -132,17 +154,11 @@ badMove: function (){
 //...this is passed to basically everything..... badddd
 
     canWeMove :function(id){
-      if( game.previousPiece.color == game.playerTurn){
+      if( game.previousPiece.color == game.playerTurn ){
 
         
 
-      if(game.previousPiece.color=="red"){
-        game.playerTurn = "blue";
-        }
-         if(game.previousPiece.color=="blue"){
-          game.playerTurn = "red";
-        
-        }
+   
 
       var calc = normalIndex[id]-normalIndex[this.previousPiece.id];
       console.log("the calc " +calc);
@@ -214,6 +230,7 @@ console.log("we should  take");
     takePiece(calc,"blue");
   }
   else{
+
     console.log("Dead End");
 
     game.badMove();
@@ -392,7 +409,14 @@ count++;
     movePiece: function(e,thingToDelete,color){
    
 
+      game.hasMoved =true;
+      if(game.previousPiece.color=="red"){
+        game.playerTurn = "blue";
+        }
+         else if(game.previousPiece.color=="blue"){
+          game.playerTurn = "red";
         
+        }
 console.log("moved to" + e); 
   columnBlock[e].style.backgroundColor =game.previousPiece.color; 
   columnBlock[game.previousPiece.id].style.backgroundColor=game.currentPiece.color;
