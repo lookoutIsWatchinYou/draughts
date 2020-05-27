@@ -68,8 +68,10 @@ console.log(board);
 //done that i think
 //NO need to stop it skipping turns for selectingp ieces
 //Stopped it skipping
-//need to add double jumps and then kings arent any other rules?
-//also need to properly comment everything
+//need to add double jumps 
+//need to add two chekcs: one for empty square two squares away
+//and one for occupied square one away
+//restructered so no local functions as i may need to call them seperatley for double jumps
 //**************END OF frazers notes!************************ */
 //************************************** */
 //************************************** */
@@ -77,6 +79,7 @@ console.log(board);
 //************************************** */
 
 var game ={
+
   hasMoved:true,
   playerTurn:"red",
   previousPiece:{
@@ -146,6 +149,173 @@ badMove: function (){
 
 }
     },
+    
+    normalJump: function(id,calc,
+      columnBlock){
+      console.log("attempting normal jump");
+      if(game.previousPiece.color=="red"){
+      if(calc==7||calc==9){
+        canMove=true;
+
+        game.movePiece(id,game.previousPiece.color,columnBlock)
+      }
+      else{
+        console.log("attempting to take ");
+
+  game.checkAdjacent(id,calc);
+
+
+      }
+    }
+      
+      else{
+          //check for normal movement
+          //put in another function that takes color and id for current
+      
+        if(calc==-7||calc==-9){
+          canMove=true;
+
+          game.movePiece(id,columnBlock);
+      }
+      else{
+        console.log("attempting to take ");
+
+        game.checkAdjacent(id,calc);
+
+      }
+    }
+  },
+
+   checkAdjacent:function(id,calc){
+
+    console.log("should check if we can take instead of  jump ");
+    
+    if(  game.previousPiece.color=="red"||game.previousPiece.type=="king" ){
+  
+  
+      console.log(grid[id]);
+    if(grid[+id-9]==2||grid[+id-7]==2){
+  console.log("we should  take");
+      game.takePiece(calc,"red",id);
+    }
+    else{
+      console.log("DEAD END");
+  
+      game.badMove();
+      }
+  
+  }
+  
+   else if(game.previousPiece.color=="blue"||game.previousPiece.type=="king"){
+     if(grid[+id+9] ==1 || grid[+id+7] ==1){
+      console.log("we should  take");
+  
+      game.takePiece(calc,"blue",id);
+    }
+    else{
+  
+      console.log("Dead End");
+  
+      game.badMove();
+      
+    }
+  
+  }
+  
+  },
+
+   takePiece:function(calc,color,id){
+    //wat direction we going 
+      if(calc == 18){
+    
+         direction = "down"
+      }
+      if(calc == 14){
+        direction = "up"
+    
+      }
+       if(calc == -18){
+        direction = "up"
+     }
+      if(calc == -14){
+       direction = "down"
+    
+     }
+    
+    
+       console.log("entered take")
+       if(  color=="red"){
+    
+        console.log("triggered red on take check")
+    
+         //so 14 ,26 to 40, 33 next door
+       if(direction == "down"){
+         console.log("going down red peice");
+        canMove=true;
+    
+    //just checking if adjacent piece is actually right not needed really
+    if(grid[+id-9]==2){
+      canMove=true;
+      console.log("take it");
+    
+     return game.movePiece(id, id-9, color,columnBlock);//this will pass coords for removing piece by changing color/id
+    
+    }
+       }
+    if(direction == "up"){
+          console.log("going up red peice");
+    
+    if(grid[+id-7]==2){
+      canMove=true;
+      console.log("take it jump");
+    
+      return game.movePiece(id,id-7,color,columnBlock);
+    
+    }
+    else{
+    
+      game.badMove();
+            }
+      }
+          
+         }
+    
+      if(color == "blue"){
+    
+        if(direction =="down"){
+          console.log("going down blue" )
+    
+          if(grid[+id+7]==1){
+            console.log("take it jump"); 
+    
+          canMove=true;
+          return    game.movePiece(id, +id+7, color,);
+          }
+          else{
+            game.badMove();
+          }
+        }
+    
+        
+        if(direction =="up"){
+          console.log("going up blue")
+    
+          if(grid[+id+9]==1){
+            console.log("take it  jump");
+    
+          canMove=true;
+          return   game.movePiece(id, +id+9,color);
+          }
+          else{
+            game.badMove();
+          }
+        }
+        else{
+          window.alert("no direction???");
+        }
+    
+      }
+    },
     //this is gonna check each grid
     //gettin in to programming again..
     //mad anxiety not helping
@@ -153,7 +323,7 @@ badMove: function (){
 //take on click event id so the index of grid squqare clicked
 //...this is passed to basically everything..... badddd
 
-    canWeMove :function(id){
+    canWeMove :function(id,columnBlock){
       if( game.previousPiece.color == game.playerTurn ){
 
         
@@ -163,189 +333,30 @@ badMove: function (){
       var calc = normalIndex[id]-normalIndex[this.previousPiece.id];
       console.log("the calc " +calc);
 
-      normalJump(id);
+      game.normalJump(id,calc,columnBlock
+        );
       
-      function normalJump(id){
-        console.log("attempting normal jump");
-        if(game.previousPiece.color=="red"){
-        if(calc==7||calc==9){
-          canMove=true;
-
-          game.movePiece(id,game.previousPiece.color)
-        }
-        else{
-          console.log("attempting to take ");
-
-    checkAdjacent(id);
-
-
-        }
-      }
-        
-        else{
-            //check for normal movement
-            //put in another function that takes color and id for current
-        
-          if(calc==-7||calc==-9){
-            canMove=true;
-
-            game.movePiece(id);
-        }
-        else{
-          console.log("attempting to take ");
-
-          checkAdjacent(id);
-
-        }
-      }
-    }
+ 
   }
   else{
     return window.alert("Its " + game.playerTurn +" turn not yours")
   }
-function checkAdjacent(id){
-
-  console.log("should check if we can take instead of  jump ");
-  
-  if(  game.previousPiece.color=="red"||game.previousPiece.type=="king" ){
-
-
-    console.log(grid[id]);
-  if(grid[+id-9]==2||grid[+id-7]==2){
-console.log("we should  take");
-    takePiece(calc,"red");
-  }
-  else{
-    console.log("DEAD END");
-
-    game.badMove();
-    }
-
-}
-
- else if(game.previousPiece.color=="blue"||game.previousPiece.type=="king"){
-   if(grid[+id+9] ==1 || grid[+id+7] ==1){
-    console.log("we should  take");
-
-    takePiece(calc,"blue");
-  }
-  else{
-
-    console.log("Dead End");
-
-    game.badMove();
-    
-  }
-
-}
-
-}
 
 
 
- function takePiece(calc,color){
-//wat direction we going 
-  if(calc == 18){
-
-     direction = "down"
-  }
-  if(calc == 14){
-    direction = "up"
-
-  }
-   if(calc == -18){
-    direction = "up"
- }
-  if(calc == -14){
-   direction = "down"
-
- }
 
 
-   console.log("entered take")
-   if(  color=="red"){
-
-    console.log("triggered red on take check")
-
-     //so 14 ,26 to 40, 33 next door
-   if(direction == "down"){
-     console.log("going down red peice");
-    canMove=true;
-
-//just checking if adjacent piece is actually right not needed really
-if(grid[+id-9]==2){
-  canMove=true;
-  console.log("take it");
-
- return game.movePiece(id, id-9, color);//this will pass coords for removing piece by changing color/id
-
-}
-   }
-if(direction == "up"){
-      console.log("going up red peice");
-
-if(grid[+id-7]==2){
-  canMove=true;
-  console.log("take it jump");
-
-  return game.movePiece(id,id-7,color);
-
-}
-else{
-
-  game.badMove();
-        }
-  }
-      
-     }
-
-  if(color == "blue"){
-
-    if(direction =="down"){
-      console.log("going down blue" )
-
-      if(grid[+id+7]==1){
-        console.log("take it jump");
-
-      canMove=true;
-      return    game.movePiece(id, +id+7, color);
-      }
-      else{
-        game.badMove();
-      }
-    }
-
-    
-    if(direction =="up"){
-      console.log("going up blue")
-
-      if(grid[+id+9]==1){
-        console.log("take it  jump");
-
-      canMove=true;
-      return   game.movePiece(id, +id+9,color);
-      }
-      else{
-        game.badMove();
-      }
-    }
-    else{
-      window.alert("no direction???");
-    }
-
-  }
-}
 
 
 
   },
 
 
-    watpieceSelected: function(e)
+    watpieceSelected: function(e,columnBlock)
      //tracks where we at
      //current selected and previous selected
     {
-
+      console.log(columnBlock[e].style.backgroundColor + " the column block");
 
       if(game.currentPiece.id==2){
 
@@ -377,7 +388,7 @@ count++;
 
        if(count>=1 && game.currentPiece.id==0){
          count=0;
-        this.canWeMove(e);
+        this.canWeMove(e,columnBlock);
 
         console.log("piece at " +game.previousPiece.id+ " should move  to " + e);
     //lets you just move board peices with 0 rules 
@@ -407,8 +418,6 @@ count++;
 
     //all this does is move location on page and grid
     movePiece: function(e,thingToDelete,color){
-   
-
       game.hasMoved =true;
       if(game.previousPiece.color=="red"){
         game.playerTurn = "blue";
@@ -417,6 +426,7 @@ count++;
           game.playerTurn = "red";
         
         }
+      
 console.log("moved to" + e); 
   columnBlock[e].style.backgroundColor =game.previousPiece.color; 
   columnBlock[game.previousPiece.id].style.backgroundColor=game.currentPiece.color;
@@ -474,7 +484,7 @@ function giveIdAndOnclick(){
           console.log(e.id);
 
           game.currentPiece.idMethod(e.id);//id neededfor checking background color
-     game.watpieceSelected(e.id);
+     game.watpieceSelected(e.id,columnBlock);
 
   
         };
